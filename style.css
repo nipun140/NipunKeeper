@@ -203,15 +203,15 @@ textarea:focus {
   box-shadow: 0px 1px 4px 1px #0000006e;
 }
 
-.red {
+.option.red {
   background-color: red;
 }
 
-.blue {
+.option.blue {
   background-color: blue;
 }
 
-.yellow {
+.option.yellow {
   background-color: yellow;
 }
 

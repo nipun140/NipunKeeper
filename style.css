@@ -33,13 +33,16 @@ header p {
   top: 13%;
   left: 50%;
   transform: translateX(-50%);
-  padding: 10px;
   width: 17rem;
   cursor: pointer;
   border-radius: 6rem;
   font-weight: bold;
   font-size: 1.2rem;
   z-index: 2;
+}
+
+.removeEvent {
+  pointer-events: none;
 }
 
 .circle {
@@ -141,6 +144,8 @@ header p {
   width: 100%;
   height: inherit;
   overflow-y: auto;
+  background-color: white;
+  color: black;
   overflow-wrap: break-word;
   padding: 4rem 1.2rem 1.2rem;
   font-size: 1.2rem;
@@ -156,6 +161,8 @@ textarea {
   height: inherit;
   background-color: white;
   resize: none;
+  background-color: white;
+  color: black;
   font-size: 1.4rem;
   padding: 4rem 1.2rem 1.2rem;
   border: none;
@@ -174,7 +181,7 @@ textarea:focus {
   display: flex;
 }
 
-@media (max-width: 400px) {
+/* @media (max-width: 400px) {
   .innerBtns {
     flex-direction: column;
   }
@@ -182,7 +189,7 @@ textarea:focus {
   .btn.delbtn {
     margin-top: 6px;
   }
-}
+} */
 
 .btn {
   position: relative;

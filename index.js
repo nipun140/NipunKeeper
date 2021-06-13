@@ -8,16 +8,21 @@ let updateLocalS = () => {
 
   let notesArray = document.querySelectorAll(".note"); //returns a nodeList
   notesArray.forEach((note) => {
-    let textareaID = note.querySelector(".note textarea");
-    notes.push(textareaID.value); //push note data into the array
+    let textareaID = note.querySelector(".note textarea"); //fetch the text inside the textarea of a note
+
+    notes.push([
+      //push all three values about a note
+      textareaID.value,
+      textareaID.style.backgroundColor,
+      textareaID.style.color,
+    ]); //push note data into the array
   });
 
-  console.log(notes);
   localStorage.setItem("notesKey", JSON.stringify(notes)); //udpate localS
 };
 
 // add new note function
-let addNewNote = (text) => {
+let addNewNote = (text, bgcolor, textcolor) => {
   let note = document.createElement("div");
   note.classList.add("note");
 
@@ -57,7 +62,7 @@ let addNewNote = (text) => {
   let editBtn = note.querySelector(".editbtn");
   let delBtn = note.querySelector(".delbtn");
   let textareaId = note.querySelector("textarea");
-  let mainID = note.querySelector(".main");
+  let mainId = note.querySelector(".main");
 
   //delete a note
   delBtn.addEventListener("click", () => {
@@ -65,14 +70,18 @@ let addNewNote = (text) => {
     updateLocalS();
   });
 
-  //text value //if some data is alreadt ther we need to display it in both conditions
+  //text,background-color,text-color value //if some data is already there we need to display it in both conditions textarea and main div both
   textareaId.value = text;
-  mainID.innerHTML = text;
+  textareaId.style.color = textcolor;
+  textareaId.style.backgroundColor = bgcolor;
+  mainId.innerHTML = text;
+  mainId.style.color = textcolor;
+  mainId.style.backgroundColor = bgcolor;
 
   //toggle class
   editBtn.addEventListener("click", () => {
     textareaId.classList.toggle("hidden");
-    mainID.classList.toggle("hidden");
+    mainId.classList.toggle("hidden");
   });
 
   //change the Color
@@ -80,12 +89,14 @@ let addNewNote = (text) => {
   //function to change color
   let changeColor = (type, color) => {
     if (type == "brush") {
+      //brush means text color
       textareaId.style.color = color;
-      mainID.style.color = color;
+      mainId.style.color = color;
     } else {
       textareaId.style.backgroundColor = color;
-      mainID.style.backgroundColor = color;
+      mainId.style.backgroundColor = color;
     }
+    updateLocalS(); //update the color changes in the local storage
   };
 
   //adding events to all color options of both brush and palette
@@ -105,18 +116,32 @@ let addNewNote = (text) => {
     });
   });
 
+  //remove event of onclick from add new note button while hovering palette/brushbtn
+  let dropBtns = note.querySelectorAll(".innerBtns .btn.dropBtn");
+
+  dropBtns.forEach((element) => {
+    element.addEventListener("mouseover", () => {
+      let addNoteBtn = document.querySelector("#addNote");
+      addNoteBtn.classList.add("removeEvent");
+      console.log("hover");
+    });
+  });
+
+  dropBtns.forEach((element) => {
+    element.addEventListener("mouseout", () => {
+      let addNoteBtn = document.querySelector("#addNote");
+      addNoteBtn.classList.remove("removeEvent");
+      console.log("hover");
+    });
+  });
+
   //onchange event when we click outside the textarea
   textareaId.addEventListener("change", (event) => {
     let currentTextInTextArea = event.target.value; //event was clicking outside,target was textarea and value was inside the teextatea
-    mainID.innerHTML = currentTextInTextArea;
+    mainId.innerHTML = currentTextInTextArea;
 
     //update the localS when there is change in node
-    console.log("onchange fired");
     updateLocalS();
-
-    //save the changes when clicked outside and toggle the class
-    // textareaId.classList.toggle("hidden");
-    // mainID.classList.toggle("hidden");
   });
 
   document.querySelector(".notes").appendChild(note); //appending the new note to the notes div in DOM
@@ -125,25 +150,26 @@ let addNewNote = (text) => {
 //addnode click event to the add new note button
 addNoteId.addEventListener("click", () => {
   addNewNote(
-    "welcome to Nipun Keep,start by clicking the green pencil button to edit the note"
+    "welcome to Nipun Keep! start by clicking the green pencil button to edit this note"
   );
 });
 
 //display function
 let displayNotes = () => {
-  let notesString = localStorage.getItem("notesKey"); //will return null if no string is present at the given key
-  let notesArray = JSON.parse(notesString);
+  let notesString2d = localStorage.getItem("notesKey"); //will return null if no string is present at the given key
+  let notesArray2d = JSON.parse(notesString2d);
 
-  if (notesString != null && notesString != "[]") {
-    notesArray.forEach((noteData) => {
-      addNewNote(noteData);
+  if (notesString2d != null && notesString2d != "[]") {
+    notesArray2d.forEach((noteData) => {
+      //noteData is also an array having 3 values
+      addNewNote(noteData[0], noteData[1], noteData[2]);
     });
   }
 };
 
 displayNotes(); //call once on loading the page
 
-//OTHER METHOD
+//OTHER METHOD(to change color)
 //other way to add color changing functionality
 //   let brushr = note.querySelector(".brushbtn .option.red");
 //   let brushb = note.querySelector(".brushbtn .option.blue");

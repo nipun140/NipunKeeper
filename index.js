@@ -1,7 +1,22 @@
 "use strict";
+
 let addNoteId = document.getElementById("addNote");
 
-// addnode function
+//update locaalS function
+let updateLocalS = () => {
+  let notes = [];
+
+  let notesArray = document.querySelectorAll(".note"); //returns a nodeList
+  notesArray.forEach((note) => {
+    let textareaID = note.querySelector(".note textarea");
+    notes.push(textareaID.value); //push note data into the array
+  });
+
+  console.log(notes);
+  localStorage.setItem("notesKey", JSON.stringify(notes)); //udpate localS
+};
+
+// add new note function
 let addNewNote = (text) => {
   let note = document.createElement("div");
   note.classList.add("note");
@@ -10,17 +25,17 @@ let addNewNote = (text) => {
                   <div class="btn dropBtn palettebtn">
                        <span id="paletteIcon" class="fas fa-palette icon"></span>
                     <div class="dropContent">
-                         <div class="option red" data-type="palette" data-color="red"></div>
-                          <div class="option yellow" data-type="palette" data-color="yellow"></div>
-                          <div class="option blue" data-type="palette" data-color="blue"></div>
+                         <div class="option red" data-type="palette" data-color="#e74c3c"></div>
+                          <div class="option yellow" data-type="palette" data-color="#f9ca24"></div>
+                          <div class="option blue" data-type="palette" data-color="#0984e3"></div>
                     </div>
                 </div>
                 <div class="btn dropBtn brushbtn">
                     <span id="brushIcon" class="fas fa-paint-brush icon"></span>
                     <div class="dropContent">
-                         <div class="option red" data-type="brush" data-color="red"></div>
-                          <div class="option yellow" data-type="brush" data-color="yellow"></div>
-                          <div class="option blue" data-type="brush" data-color="blue"></div>
+                         <div class="option red" data-type="brush" data-color="#e74c3c"></div>
+                          <div class="option yellow" data-type="brush" data-color="#f9ca24"></div>
+                          <div class="option blue" data-type="brush" data-color="#74b9ff"></div>
                     </div>
                 </div>
                         <div class="btn operators editbtn">
@@ -38,16 +53,16 @@ let addNewNote = (text) => {
 
   note.insertAdjacentHTML("afterbegin", htmlData);
 
-  //gettig references dynamically
+  //gettig references dynamically for the clicked note
   let editBtn = note.querySelector(".editbtn");
   let delBtn = note.querySelector(".delbtn");
   let textareaId = note.querySelector("textarea");
   let mainID = note.querySelector(".main");
 
-  //delete node
+  //delete a note
   delBtn.addEventListener("click", () => {
     note.remove();
-    console.log("deleted");
+    updateLocalS();
   });
 
   //text value //if some data is alreadt ther we need to display it in both conditions
@@ -95,19 +110,41 @@ let addNewNote = (text) => {
     let currentTextInTextArea = event.target.value; //event was clicking outside,target was textarea and value was inside the teextatea
     mainID.innerHTML = currentTextInTextArea;
 
+    //update the localS when there is change in node
+    console.log("onchange fired");
+    updateLocalS();
+
     //save the changes when clicked outside and toggle the class
-    textareaId.classList.toggle("hidden");
-    mainID.classList.toggle("hidden");
+    // textareaId.classList.toggle("hidden");
+    // mainID.classList.toggle("hidden");
   });
 
-  document.querySelector(".notes").appendChild(note); //appending the new note to notes div in DOM
+  document.querySelector(".notes").appendChild(note); //appending the new note to the notes div in DOM
 };
 
-//addnode click event
+//addnode click event to the add new note button
 addNoteId.addEventListener("click", () => {
-  addNewNote("vdfv");
+  addNewNote(
+    "welcome to Nipun Keep,start by clicking the green pencil button to edit the note"
+  );
 });
 
+//display function
+let displayNotes = () => {
+  let notesString = localStorage.getItem("notesKey"); //will return null if no string is present at the given key
+  let notesArray = JSON.parse(notesString);
+
+  if (notesString != null && notesString != "[]") {
+    notesArray.forEach((noteData) => {
+      addNewNote(noteData);
+    });
+  }
+};
+
+displayNotes(); //call once on loading the page
+
+//OTHER METHOD
+//other way to add color changing functionality
 //   let brushr = note.querySelector(".brushbtn .option.red");
 //   let brushb = note.querySelector(".brushbtn .option.blue");
 //   let brushy = note.querySelector(".brushbtn .option.yellow");
